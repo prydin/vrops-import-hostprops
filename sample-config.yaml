@@ -1,0 +1,15 @@
+# vCenter details
+#
+vcHost: "my-vcenter.corp.local"
+vcUser: "pontus@corp.local"
+vcPassword: "secret"
+
+# vR Ops details
+#
+vropsUrl: "https://my-vrops.corp.local"
+vropsUser: "demouser"
+vropsPassword: "secret"
+
+# Property pattern
+#
+pattern: "NFS.*"

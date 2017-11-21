@@ -1,0 +1,2 @@
+pyvmomi>=6.5.0.2017.5.post1
+PyYAML>=3.12
