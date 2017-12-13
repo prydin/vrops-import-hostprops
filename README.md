@@ -1,4 +1,4 @@
-# vrops-import-hostprops
+# Importing host propeties
 Imports host properties to vRealize Operations
 
 ## What it is
@@ -37,3 +37,15 @@ pattern: "NFS.*"
 python import-props.py --config path/to/config/file
 ```
 5) (Optional) The script only imports properties once. If you want it to run periodicall, you should use cron or Windows scheduled tasks. Recommended interval is once every hour, since the collection takes a fairly long time and host properties aren't likely to change very often.
+
+# Checking hosts against host profiles
+The import-host-profiles.py script runs a check of host profies against hosts and imports the results as notification events into vRealize Operations. It is installed and configured the same way as the import-props.py script (see above).
+
+In addition, you probably want to import the alert.xml alert definition into vRealize Operations. This will create symptoms and compliance alerts that are triggered by the notification events fired when a host is out of compliance with its host profile.
+
+## How to run it
+Install and configure the same way as described for the property import script (see above). Run it as follows:
+
+```bash
+python import-host-profiles.py --config path/to/config/file
+```
