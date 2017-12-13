@@ -14,47 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import requests
+import argparse
+import client
+import urllib
+import yaml
 import json
-
-import atexit
-
-from pyVim import connect
-from pyVmomi import vim
-
 import fnmatch
 import time
-import urllib
-import argparse
-import yaml
 
-# import tools.cli as cli
-
-headers = { "Accept": "application/json", "Content-Type": "application/json"}
-
-def authenticate_vrops(url_base, username, password):
-
-    # Get security token
-    #
-    credentials = json.dumps({ "username": username, "password": password })
-    result = requests.post(url=url_base + "/auth/token/acquire",
-                           data=credentials,
-                           verify=False, headers=headers)
-    if result.status_code != 200:
-        print str(result.status_code) + " " + result.content
-        exit(1)
-    json_data = json.loads(result.content)
-    return json_data["token"]
-
-
-def authenticate_vc(host, username, password, port = 443):
-    vc = connect.SmartConnectNoSSL(host=host,
-                                     user=username,
-                                     pwd=password,
-                                     port=port)
-    atexit.register(connect.Disconnect, vc)
-    return vc
-
+from pyVmomi import vim
 
 # Parse arguments
 #
@@ -71,12 +39,12 @@ stream.close()
 
 # Get current adapters
 #
+client = client.Client()
 vrops_url_base = config["vropsUrl"] + "/suite-api/api"
-token = authenticate_vrops(vrops_url_base, config["vropsUser"], config["vropsPassword"])
+token = client.authenticate_vrops(vrops_url_base, config["vropsUser"], config["vropsPassword"])
 vc_host = config["vcHost"]
-headers["Authorization"] = "vRealizeOpsToken " + token
 
-vc = authenticate_vc(vc_host, config["vcUser"], config["vcPassword"])
+vc = client.authenticate_vc(vc_host, config["vcUser"], config["vcPassword"])
 content = vc.RetrieveContent()
 root = content.rootFolder
 
@@ -89,9 +57,8 @@ for host in hosts.view:
     # Look up host in vR Ops
     #
     query = urllib.urlencode({ "resourceKind": "HostSystem", "name": host.name})
-    result = requests.get(url=vrops_url_base + "/resources?" + query,
-                          headers=headers,
-                          verify=False)
+    result = client.get("/resources?" + query)
+
     vrops_host = json.loads(result.content)
     if len(vrops_host["resourceList"]) == 0:
         print "Skipping " + host.name
@@ -113,10 +80,8 @@ for host in hosts.view:
     payload = {
         "property-content": props
     }
-    result = requests.post(url=vrops_url_base + "/resources/" + vrops_host_id + "/properties",
-                           data=json.dumps(payload),
-                           verify=False,
-                           headers=headers)
+    result = client.post("/resources/" + vrops_host_id + "/properties",
+                           data=json.dumps(payload))
     print "Processed " + host.name + ". Result=" + str(result.status_code)
 
 
