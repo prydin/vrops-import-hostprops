@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><alertContent>
+    <AlertDefinitions>
+        <AlertDefinition adapterKind="VMWARE" description="Triggered when a host no longer conforms to its attached host profile. " id="AlertDefinition-6a0fa4bb-7766-41a2-954d-db5198e043b7" name="Host Profile Drift" resourceKind="HostSystem" subType="21" type="16">
+            <State severity="automatic">
+                <SymptomSet applyOn="self" operator="and" ref="SymptomDefinition-926ddd6f-436a-447d-80fb-4cd2cc6a553a"/>
+                <Impact key="risk" type="badge"/>
+            </State>
+        </AlertDefinition>
+    </AlertDefinitions>
+    <SymptomDefinitions>
+        <SymptomDefinition adapterKind="VMWARE" id="SymptomDefinition-926ddd6f-436a-447d-80fb-4cd2cc6a553a" name="Host profile violaton" resourceKind="HostSystem">
+            <State severity="warning">
+                <Condition eventMsg="Host profile violation.*" eventSubType="5" eventType="11" operator="regex" type="msg_event"/>
+            </State>
+        </SymptomDefinition>
+    </SymptomDefinitions>
+</alertContent>
