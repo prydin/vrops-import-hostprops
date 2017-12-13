@@ -49,3 +49,7 @@ Install and configure the same way as described for the property import script (
 ```bash
 python import-host-profiles.py --config path/to/config/file
 ```
+## What it looks like
+Once you have imported the alert definition and captured some host profile violations, you should see them under the Analysis->Compliance sub tab.
+
+![alt text](screenshot.png "Screen shot")
